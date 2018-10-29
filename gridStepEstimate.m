@@ -1,7 +1,7 @@
-p=zeros(length(clouds),1);
-for i=1:length(clouds)
-    volume=abs((clouds{i}.XLimits(2)-clouds{i}.XLimits(1))*(clouds{i}.YLimits(2)-clouds{i}.YLimits(1))*(clouds{i}.ZLimits(2)-clouds{i}.ZLimits(1)));
-    p(i)=clouds{i}.Count/volume;
+p=zeros(length(trclouds),1);
+for i=1:length(trclouds)
+    volume=abs((trclouds{i}.XLimits(2)-trclouds{i}.XLimits(1))*(trclouds{i}.YLimits(2)-trclouds{i}.YLimits(1))*(trclouds{i}.ZLimits(2)-trclouds{i}.ZLimits(1)));
+    p(i)=trclouds{i}.Count/volume;
     
 end
 aveP=mean(p);

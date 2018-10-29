@@ -6,11 +6,14 @@ function rosPCCallback(~,massage)
 ptcloud = massage;
 global pcObj
 allInpoints=readXYZ(ptcloud);
-%clean dirty points
-pointsFar=sqrt(allInpoints(:,1).^2+allInpoints(:,2).^2)>4.5;
-pointsGround=allInpoints(:,3)<-0.65;
-pointSelect=~(pointsFar | pointsGround);
-pcObj = pointCloud(allInpoints(pointSelect,:));
+% ·ÖÆç1   clean dirty points
+% pointsFar=sqrt(allInpoints(:,1).^2+allInpoints(:,2).^2)>6;
+% pointsGround=allInpoints(:,3)<-0.44;
+% pointSelect=~(pointsFar | pointsGround);
+% pcObj = pointCloud(allInpoints(pointSelect,:));
+
+% ·ÖÆç2   raw
+pcObj=pointCloud(allInpoints);
 
 end
 

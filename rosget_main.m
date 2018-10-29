@@ -1,5 +1,5 @@
 clc;clear;close all;
-
+rosshutdown;
 rosinit('192.168.1.187');
 rosSuber=rossubscriber('/velodyne_points',@rosPCCallback);
 global pcObj
@@ -8,11 +8,12 @@ global pcObj
 % end
 while isempty(pcObj)
     pause(0.1);
+    disp('cannot get pointCloud')
 end
 addpath('./flann/');
 addpath('./estimateRigidTransform');
 icpGridStep = 0.3;
-eigDGridStep = 0.4;
+eigDGridStep = 0.3;
 overlap = 0.5;
 icpToler= 1e-4;
 ICPthreashold= 50;
@@ -26,20 +27,34 @@ MotionGlobal{1}=eye(4);
 generalTime=tic;
 commond='';
 clouds{1}=pcObj;
+fig=figure('Position',[55 173 590 696]);
 routeDisplay(MotionGlobal,'r-o',false,[]);
-pcshow(clouds{1})
+fullCloud=clouds{1};
+
+reAxes=pcshow(fullCloud);
+hold on
+% reScatter = reAxes.Children;
 i=1;
 while  isempty(commond) %&& commond~='q'
     commond=input('please input commond(enter for next): \n','s');
-    close all;
     i=i+1;
     clouds{i}=pcObj;
     fixS=clock;
     [relativeMotion{i},MSE(i,1),tryTimes]=matchFix(clouds{i-1},clouds{i},overlap,eigDGridStep,res,i);
     MotionGlobal{i}=MotionGlobal{i-1}*relativeMotion{i};
     globalCameraPosition(i,:)=MotionGlobal{i}(1:3,4)';
+    
+    prevCP=reAxes.CameraPosition;
+    prevCT=reAxes.CameraTarget;
+    prevCUV=reAxes.CameraUpVector;
+    
     routeDisplay(MotionGlobal,'r-o',false,[]);
-    obtainResult(clouds,MotionGlobal,false);
+    obtainResult(clouds,MotionGlobal,false,i);
+    
+%     reAxes.CameraPosition=prevCP;
+%     reAxes.CameraTarget=prevCT;
+%     reAxes.CameraUpVector=prevCUV;
+    
     fixE=clock;
     fixtime=etime(fixE,fixS);
     disp(['curr fixtime: ' num2str(fixtime)])
