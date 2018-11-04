@@ -8,7 +8,7 @@ global pcObj
 % end
 while isempty(pcObj)
     pause(0.1);
-    disp('cannot get pointCloud')
+    disp('Cannot get pointCloud !')
 end
 addpath('./flann/');
 addpath('./estimateRigidTransform');

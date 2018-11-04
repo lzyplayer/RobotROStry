@@ -61,7 +61,7 @@ for i=2:nums
     disp(['meanSquareERR: ' num2str(MSE(i,1))])
     disp('');
 end
-routeDisplay(MotionGlobal(1:34),'r-o',false,[21]);
-obtainResult(trclouds,MotionGlobal(1:34),false,mergeGridStep);
+routeDisplay(MotionGlobal,'r-o',false,[34,33,36]);
+obtainResult(trclouds,MotionGlobal,false,mergeGridStep);
 % pcTrim(trclouds,20,[-0.34 , 2],0.0001)
 
