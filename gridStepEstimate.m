@@ -1,3 +1,6 @@
+trcloud=cell(2,1);
+trcloud{1}=clo1;
+trcloud{2}=clo2;
 p=zeros(length(trclouds),1);
 for i=1:length(trclouds)
     volume=abs((trclouds{i}.XLimits(2)-trclouds{i}.XLimits(1))*(trclouds{i}.YLimits(2)-trclouds{i}.YLimits(1))*(trclouds{i}.ZLimits(2)-trclouds{i}.ZLimits(1)));

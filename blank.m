@@ -1,1 +1,3 @@
-MotionGlobal=MotionGlobal(1:33);
+routeDisplay(MotionGlobal,'r-o',true,[1 155]);
+
+pcshow()

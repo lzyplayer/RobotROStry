@@ -1,4 +1,4 @@
-function [ Motion ,MSE ,fixtime] = matchFix( ModelCloud,DataCloud ,overlap,gridStep,res,curr)
+function [ Motion ,MSE ,fixtime] = matchFix( ModelCloud,DataCloud ,overlap,gridStep,res,curr,MSEthersold)
 %MATCHFIX 此处显示有关此函数的摘要
 %   此处显示详细说明
 % tic
@@ -43,7 +43,7 @@ Model= ModelCloud.Location(1:res:end,:)';
 Data= DataCloud.Location(1:res:end,:)';
 %
 [MSE,R,t] = TrICP(Model, Data, R0, t0, 100, overlap);
-if(MSE>100)
+if(MSE>MSEthersold)
     Motion=[];
     warning(['cannot match cloud ' num2str(curr) ' with prev']);
     return;

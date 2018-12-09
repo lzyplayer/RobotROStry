@@ -25,7 +25,7 @@ for i=1:length(motion)
         Location=clouds{i}.Location';
         TLocation=currMotion*[Location;ones(1,size(Location,2))];
         currPointCloud=pointCloud(TLocation(1:3,:)');
-        pcmerge(fullCloud,currPointCloud,mergeStep);
+        fullCloud=pcmerge(fullCloud,currPointCloud,mergeStep);
         
     end
 end

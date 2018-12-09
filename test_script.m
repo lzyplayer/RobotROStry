@@ -5,14 +5,41 @@ for i=1:length(clouds)
     clouds{i}=pointCloud(clouds{i});
 end
 %% 去除噪声
-load('scienceBuild_raw.mat')
+load('scienceBuild_raw0-3.mat')
 scannum=length(clouds);
 for i=1:scannum
+    indata=clouds{i}.Location;
     pointsFar=sqrt(indata(:,1).^2+indata(:,2).^2)>4.5;
-    pointsGround=indata(:,3)<-0.65;
-    pointSelect=~(pointsFar | pointsGround);
+    pointsGround=indata(:,3)<-0.4;
+    pointRoof=indata(:,3)>2.1;
+    pointSelect=~(pointsGround|pointRoof); %~(pointsFar | pointsGround);
     clouds{i}=pointCloud(indata(pointSelect,1:3));
 end
+%% 化绝对为相对
+relativeMotionRe=cell(1,length(MotionGlobal));
+relativeMotionRe{1}=eye(4);
+for i=2:length(MotionGlobal)
+    relativeMotionRe{i} = MotionGlobal{i-1} \ MotionGlobal{i} ;
+end
+
+%% 化相对为绝对
+close all;
+figure('position',[-1439 76 1440 823])
+MotionGlobal=cell(1,length(relativeMotion));
+MotionGlobal{1}=eye(4);
+for i=2:length(relativeMotion)
+    MotionGlobal{i} = MotionGlobal{i-1} * relativeMotion{i} ;
+end
+% optional
+mergeGridStep = 0.1;
+% routeDisplay(MotionGlobalRe,'r-o',false,[50,55,60]);
+obtainResult(trclouds,MotionGlobal,false,mergeGridStep);
+
+%% 替换破损帧
+problemFrame=76;
+relativeMotion{problemFrame} = eye(4);
+relativeMotion{problemFrame+1} = Motion;
+clouds{problemFrame}=clouds{problemFrame-1};
 
 %% 真值处理
 load hannover_GrtM_z_ConvertNeed.mat
@@ -63,12 +90,6 @@ for i=1:length(GrtM_RelativeTo1)
 end
 % obtain_model_hannover1(clouds,newMotion);
 
-%% 真值环境展示
-load hannover2_MZ.mat
-load hannover2_GrtM_z.mat
-routeDisplay(GrtM,'g-d',false,[48,55]);%(1:182)(1:532)799,490
-obtainResult(clouds,GrtM(1:100),true);
-
 
 %% 相对位置变化限制
 for i=2:length(relativeMotion)
@@ -82,13 +103,7 @@ high=historyAccMotion{toseeACC,3};
 pcshow(clouds{low});hold on;
 pcshow(pctransform(clouds{high},affine3d(historyAccMotion{toseeACC}')));%historyAccMotion{pairnum}'
 
-%% 展示相对运动某对
-tosee=2;
-% for currsee=tosee:tosee+8
-figure;
-pcshow(clouds{tosee-1});hold on;
-pcshow(pctransform(clouds{tosee},affine3d(relativeMotion{tosee}')));%historyAccMotion{pairnum}'
-% end
+
 %% 分别展示2帧
 figure;
 a=17;
@@ -132,46 +147,23 @@ pcshow(clouds{m});
 hold on;
 pcshow(pctransform(clouds{d},affine3d(motion')));
 
-%% 全局方向展现，和路径结合用
-% ori=[0 0 0 ;100 100 100 ];%全局观测方向
-ori=[0 0 0 ;0.01 0.01 0.01 ];
 
-for i=1:length(MotionGlobal)
-    currOri=MotionGlobal{i}*[ori';ones(1,size(ori,1))];
-    eachOri{i}=currOri(1:3,:)';
-    plot3(eachOri{i}(:,1),eachOri{i}(:,2),eachOri{i}(:,3),'r-o')
-    hold on
-end
-
-%% 展示路径图
-
-route=[];
-for p=1:length(MotionGlobal)
-    route=[route; MotionGlobal{p}(1:3,4)'];
-end
-plot3(route(:,1),route(:,2),route(:,3),'-*');
-xlabel('x');
-ylabel('y');
-zlabel('z');
-% axis([-3000 3000 -3000 3000 -3000 3000 ]);
-axis([-0.2 0.2 -0.2 0.2 -0.2 0.2 ]);
-
-% %test德国室内点云
-% scanTest=load('./data/scanTest.3d');
-% cloudTest=pointCloud(scanTest(:,1:3));
-% pcshow(cloudTest);
-% 
 
 
 %% 某两帧eig匹配
+addpath('./flann/');
+addpath('./estimateRigidTransform')
 s=1;
+res=1;
 % ModelCloud=clouds{1};
 % DataCloud=clouds{2};
-ModelCloud=pointCloud(trclouds{17}.Location);%clouds{234}
-DataCloud=pointCloud(trclouds{16}.Location);%clouds{687}
+mo=56;
+da=mo+1;
+ModelCloud=pointCloud(trclouds{mo}.Location);%clouds{234}
+DataCloud=pointCloud(trclouds{da}.Location);%clouds{687}
 gridStep= 0.4;%30
 overlap=0.7;
-res=1;
+tic
 [tarDesp,tarSeed,tarNorm] = extractEig(ModelCloud,gridStep); 
 [srcDesp,srcSeed,srcNorm] = extractEig(DataCloud,gridStep);
 T = eigMatch(tarDesp,srcDesp,tarSeed,srcSeed,tarNorm,srcNorm,overlap,gridStep);
@@ -180,16 +172,16 @@ R0= T(1:3,1:3);
 t0= T(1:3,4);
 Model= ModelCloud.Location(1:res:end,:)';
 Data= DataCloud.Location(1:res:end,:)';
-tic
+
 [MSE,R,t] = TrICP(Model, Data, R0, t0, 100, overlap);
 Motion=Rt2M(R,t);
 Motion(1:3,4)=Motion(1:3,4).*s;
-toc
-pcshow(pctransform(trclouds{16},affine3d(Motion')));
+
+pcshow(pctransform(trclouds{da},affine3d(Motion')));
 hold on;
-pcshow(trclouds{17});
-% 
-%展示某帧和第一帧配准
+pcshow(trclouds{mo});
+% relativeMotionRe{mo}=Motion;
+%% 展示某帧和第一帧配准
 close all;
 tar=3;
 pcshow(clouds{1});

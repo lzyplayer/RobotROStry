@@ -21,14 +21,26 @@ if(iscell(MotionGlobal))
 else
     route=MotionGlobal;
 end
-plot3(route(:,1),route(:,2),route(:,3),type);%zeros(length(route),1)
+%分歧1---三维
+% plot3(route(:,1),route(:,2),route(:,3),type);
+% xlabel('x');
+% ylabel('y');
+% zlabel('z');
+% hold on;
+% axis equal;
+% plot3(route(specialshow,1),route(specialshow,2),route(specialshow,3),'dk','MarkerSize',10);
+%分歧2---二维
+plot3(route(:,1),route(:,2),zeros(length(route),1),type);
 xlabel('x');
 ylabel('y');
 zlabel('z');
 hold on;
 axis equal;
+plot3(route(specialshow,1),route(specialshow,2),zeros(length(specialshow),1),'dk','MarkerSize',10);
 
-plot3(route(specialshow,1),route(specialshow,2),route(specialshow,3),'dk','MarkerSize',10);
+
+
+
 
 end
 

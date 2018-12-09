@@ -25,7 +25,7 @@ while  isempty(commond) %&& commond~='q'
     disp(['cloud ' int2str(i) ' stored!' ])
 %     pcshow(clouds{i});
 end
-name='scienceBuild_raw2-3.mat';
+name='scienceBuild_reGet.mat';
 save(name,'clouds');
 disp(['clouds saved as ' name '!' ])
 

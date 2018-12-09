@@ -45,5 +45,6 @@ for i=1:pairNum
     motionInfo{i,2}=m;
     motionInfo{i,3}=d;
     motionInfo{i,4}=MSE;
+%     disp(['Out Mse' ])
 end
 end
