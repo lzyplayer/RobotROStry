@@ -32,14 +32,14 @@ alGetNum=length(relativeMotion);
 fullCloud=trclouds{1};
 figure('position',[-1439 76 1440 823]);
 a=pcshow(fullCloud);
-a.CameraPosition=[-20.573 -52.42 536.959];
-a.CameraTarget=[4.579 18.606 0.83];
-a.CameraUpVector=[0.331 0.933 0.139];
-a.CameraViewAngle=5.1966;
-% a.CameraPosition=[-374.242 -194.411 316.6];
-% a.CameraTarget=[7.693 19.578 -1.906];
-% a.CameraUpVector=[0.513 0.288 0.809];
-% a.CameraViewAngle=3.4108;
+% a.CameraPosition=[-20.573 -52.42 536.959];
+% a.CameraTarget=[4.579 18.606 0.83];
+% a.CameraUpVector=[0.331 0.933 0.139];
+% a.CameraViewAngle=5.1966;
+a.CameraPosition=[-374.242 -194.411 316.6];
+a.CameraTarget=[7.693 19.578 -1.906];
+a.CameraUpVector=[0.513 0.288 0.809];
+a.CameraViewAngle=3.4108;
 Ascatter=a.Children;
 axis off
 %% show already had part
