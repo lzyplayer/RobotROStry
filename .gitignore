@@ -1,4 +1,4 @@
 *.mat
 *.mp4
 *.asv
-!workResult/*
+!/workResult/*

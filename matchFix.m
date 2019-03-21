@@ -1,7 +1,7 @@
 function [ Motion ,MSE ,fixtime] = matchFix( ModelCloud,DataCloud ,overlap,gridStep,res,curr,MSEthersold)
 %MATCHFIX 此处显示有关此函数的摘要
 %   此处显示详细说明
-% tic
+tic
 % gridStep=0.04;
 % overlap=0.35;
 % res=10;
@@ -28,30 +28,41 @@ while(isempty(T)&&fixtime<5)
         T = inv(T);
     else
         T = eigMatch(srcDesp,tarDesp,srcSeed,tarSeed,srcNorm,tarNorm,overlap,(1-fixtime/10)*gridStep);
-        
+    
     end
     fixtime=fixtime+1;
+    if isempty(T)
+        continue
+    end
+    R0= T(1:3,1:3);
+    t0= T(1:3,4);
+    Model= ModelCloud.Location(1:res:end,:)';
+    Data= DataCloud.Location(1:res:end,:)';
+    [MSE,R,t] = TrICP(Model, Data, R0, t0, 100, overlap);
+    if MSE>MSEthersold
+        T=[];
+    end
 end
 if (isempty(T))
     Motion=[];
-    warning(['cannot match cloud ' num2str(curr) ' with prev']);
+    warning([' cannot match cloud ' num2str(curr) ' with prev']);
     return ;
 end
-R0= T(1:3,1:3);
-t0= T(1:3,4);
-Model= ModelCloud.Location(1:res:end,:)';
-Data= DataCloud.Location(1:res:end,:)';
-%
-[MSE,R,t] = TrICP(Model, Data, R0, t0, 100, overlap);
+% R0= T(1:3,1:3);
+% t0= T(1:3,4);
+% Model= ModelCloud.Location(1:res:end,:)';
+% Data= DataCloud.Location(1:res:end,:)';
+% %
+% [MSE,R,t] = TrICP(Model, Data, R0, t0, 100, overlap);
 if(MSE>MSEthersold)
-    Motion=[];
-    warning(['cannot match cloud ' num2str(curr) ' with prev']);
-    return;
+%     Motion=[];
+    warning(['bad match alert: ' num2str(curr) ' with ' num2str(curr-1)]);
+%     return;
 end
 Motion=Rt2M(R,t);
 % Motion=Rt2M(R0,t0);
-% fixtime=toc;
-% disp(['fixtime is ' num2str(fixtime) 'seconds']);
+% fixFrameTotalTime=toc;
+% disp(['fixtime is ' num2str(fixFrameTotalTime) 'seconds']);
 
 end
 
