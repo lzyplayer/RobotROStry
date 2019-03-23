@@ -52,5 +52,6 @@ while  isempty(commond) %&& commond~='q'
     theta = rotm2eul(relativeMotion(1:3,1:3),'XYZ');
     theta = theta(3);
     disp(['x: ' num2str(relativeMotion(1,4)) 'y: ' num2str(relativeMotion(2,4))]);
-    disp(['theta: ' num2str(theta) 'pai']);
+    RotRad = theta/3.1415926;
+    disp(['theta: ' num2str(RotRad*180) ' degree']);
 end
