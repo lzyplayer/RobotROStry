@@ -1,4 +1,7 @@
-clc;clear;close all;
+% clc;clear;close all;
+%% 删去部分点云
+tempor=({clouds{1:30},clouds{40:end}});
+clouds= tempor;
 
 %% 化为点云格式
 for i=1:length(clouds)

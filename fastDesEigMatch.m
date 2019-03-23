@@ -24,6 +24,17 @@ for i=1:pairNum
         T = eigMatch(srcDesp{m},srcDesp{d},srcSeed{m},srcSeed{d},srcNorm{m},srcNorm{d},0.3,(1-fixtime/10)*gridStep);
         T = inv(T);
         fixtime=fixtime+1;
+        if isempty(T)
+            continue
+        end
+        R0= T(1:3,1:3);
+        t0= T(1:3,4);
+        Model= ModelCloud.Location(1:res:end,:)';
+        Data= DataCloud.Location(1:res:end,:)';
+        [MSE,R,t] = TrICP(Model, Data, R0, t0, 100, overlap);
+        if MSE>MseHold
+            T=[];
+        end
     end
     if(isempty(T))
         warning(['des cannot fix pair with clouds ' num2str(m) ' ' num2str(d)]);
@@ -31,10 +42,10 @@ for i=1:pairNum
         t0=[0 ;0 ;0];
     else
         disp(['description regis success with clouds: '  num2str(m) ' ' num2str(d)])
-    R0= T(1:3,1:3);
-    t0= T(1:3,4);
+        R0= T(1:3,1:3);
+        t0= T(1:3,4);
     end
-    [MSE,R,t] = TrICP(Model, Data, R0, t0, 100, overlap); 
+    [MSE,R,t] = TrICP(Model, Data, R0, t0, 100, overlap);
     %     num= num+1
     if (MSE > MseHold )%5.0*mean(eigMSEs)
         continue;
@@ -45,6 +56,6 @@ for i=1:pairNum
     motionInfo{i,2}=m;
     motionInfo{i,3}=d;
     motionInfo{i,4}=MSE;
-%     disp(['Out Mse' ])
+    %     disp(['Out Mse' ])
 end
 end

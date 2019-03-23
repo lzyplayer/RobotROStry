@@ -15,14 +15,14 @@ addpath('./flann/');
 addpath('./estimateRigidTransform');
 %% argument
 icpGridStep = 0.3;
-eigDGridStep = 0.3;
-overlap = 0.5;
-icpToler= 0.05;
+eigDGridStep = 2;
+overlap = 0.7;
+icpToler= 0.5;
 mergeStep = 0.015;
 % ICPthreashold= 50;
 maxPairDistance=0.5;
 res= 10;
-MSEHold=
+MSEHold=1;
 % s=1;
 LoopDectNum=5;
 loopMAmaxNum=8;

@@ -1,4 +1,5 @@
 *.mat
 *.mp4
 *.asv
+*.fig
 !/workResult/*

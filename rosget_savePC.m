@@ -1,6 +1,6 @@
 clc;clear;close all;
 rosshutdown;
-rosinit('192.168.1.187');
+rosinit('192.168.67.129');
 rosSuber=rossubscriber('/velodyne_points',@rosPCCallback);
 global pcObj
 % if ~isempty(pcObj)
