@@ -1,3 +1,7 @@
+%% 两点距离
+p1=MotionGlobal{20}(1:2,4);
+p2=MotionGlobal{68}(1:2,4);
+norm(p1-p2)
 %% 依次展示
 hold off
 for i=145:length(clouds)
