@@ -1,4 +1,4 @@
-function T = eigMatch(srcDesp,tarDesp,srcSeed,tarSeed,srcNorm,tarNorm,overlap,gridStep)
+function [T ,v] = eigMatch_err(srcDesp,tarDesp,srcSeed,tarSeed,srcNorm,tarNorm,overlap,gridStep)
 % transform source to target
 %% parameter configuration for flann search
 params.algorithm = 'kdtree';
@@ -87,7 +87,4 @@ threshold = gridStep*gridStep;
  end
 [v,idx] = min(Err);
 T = tform{idx};
-% if(isempty(T))
-%     disp(['match Failed with tarseed:' num2str(length(tarSeed)) ' srcSeed:' num2str(length(srcSeed)) ]);
-% end
 end

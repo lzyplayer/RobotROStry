@@ -7,7 +7,7 @@ addpath('./flann/');
 addpath('./estimateRigidTransform');
 eigDGridStep = 1.5;
 overlap = 0.1;
-icpToler= 1;
+icpToler= 0.5;
 res= 10;
 icpThersold=50;
 trclouds=cloudsTrim(clouds);
@@ -41,7 +41,7 @@ displayTargetPointCloud = pointCloud(displayTargetxzyPoints,'color',zeros(size(d
 curr_axes = pcshow(downFullCloud);hold on;
 curr_axes.Color=[1,1,1];
 pcshow(pctransform(displayTargetPointCloud,affine3d(relativeMotion')));%historyAccMotion{pairnum}'
-routeDisplay(relativeMotion,'ro',false);
+routeDisplay({relativeMotion},'ro',false);
 theta = rotm2eul(relativeMotion(1:3,1:3),'XYZ');
 theta = theta(3);
 disp(['theta: ' num2str(theta) 'pai']);
