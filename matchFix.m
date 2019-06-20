@@ -19,6 +19,7 @@ fixtime=0;T=[];
 while(isempty(T)&&fixtime<5)
     
     [tarDesp,tarSeed,tarNorm] = extractEig(ModelCloud,(1-fixtime/10)*gridStep);
+    tic;
     [srcDesp,srcSeed,srcNorm] = extractEig(DataCloud,(1-fixtime/10)*gridStep);
 %     if(size(tarDesp,2)<100 || size(srcDesp,2)<100)
 %         disp(['description points not enough! ' num2str(size(tarDesp,2)) ' ' num2str(size(srcDesp,2))])

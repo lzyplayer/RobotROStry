@@ -157,7 +157,7 @@ for i=i+1:nums
     %
     
 end
-% routeDisplay(MotionGlobal,'r-o',true,[154 1]);
-% obtainResult(trclouds,MotionGlobal,false,mergeGridStep);
+% routeDisplay(MotionGlobal,'r-o',true,[20 80]);
+% obtainResult(clouds,MotionGlobal,false,mergeGridStep);
 % pcTrim(trclouds,20,[-0.34 , 2],0.0001)
 
