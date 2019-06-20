@@ -3,3 +3,5 @@
 *.asv
 *.fig
 !/workResult/*
+codegen/*
+*.prj
