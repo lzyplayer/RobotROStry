@@ -1,5 +1,6 @@
 function [T ,v] = eigMatch_err(srcDesp,tarDesp,srcSeed,tarSeed,srcNorm,tarNorm,overlap,gridStep)
 % transform source to target
+% global match_tarSeed  match_srcSeed;
 %% parameter configuration for flann search
 params.algorithm = 'kdtree';
 params.trees = 8;
@@ -69,6 +70,9 @@ threshold = gridStep*gridStep;
         if(sum(CS)<3)
             continue;
         end
+        if n==126
+            1==1;
+        end
         
         match_srcSeed = match_srcSeed(:,CS);
         match_tarSeed = match_tarSeed(:,CS);
@@ -84,7 +88,20 @@ threshold = gridStep*gridStep;
     if (size(matches,1)> 0.65*size(srcDesp,2))
         break;
     end
- end
+  end
+  for i=1:length(Err)
+      if isinf(Err(i)) 
+        continue;
+      end
+    curr_Rot = rotm2eul(tform{i}(1:3,1:3),"XYZ");
+%     if i==96
+%         1==1;
+%     end
+    %%rot of x and y must less than 1.5pi
+    if max(abs(curr_Rot(1)),abs(curr_Rot(2)))>1.5
+        Err(i)=inf;
+    end
+  end
 [v,idx] = min(Err);
 T = tform{idx};
 end

@@ -1,4 +1,4 @@
-function [ Motion ,MSE ] = simpleRegWithEig( mapDescriptor,currDescriptor,ModelCloud ,DataCloud,overlap,gridStep,res,MSEthersold)
+function [ Motion ,MSE,T ] = simpleRegWithEig( mapDescriptor,currDescriptor,ModelCloud ,DataCloud,overlap,gridStep,res,MSEthersold,icpThersold)
 %MATCHFIX 此处显示有关此函数的摘要
 %   此处显示详细说明
 
@@ -12,23 +12,25 @@ if (size(mapDescriptor{1},2)>=size(currDescriptor{1},2))
     T = inv(T);
 else
     [T,rawMSE] = eigMatch_err(currDescriptor{1},mapDescriptor{1},currDescriptor{2},mapDescriptor{2},currDescriptor{3},mapDescriptor{3},overlap,gridStep);
-
 end
 disp(['raw resgist with err: ' num2str(rawMSE)]);
 R0 = T(1:3,1:3);
 t0 = T(1:3,4);
 Model= ModelCloud.Location(1:res:end,:)';
 Data= DataCloud.Location(1:res:end,:)';
-[MSE,R,t] = TrICP(Model, Data, R0, t0, 100, overlap);
+%% only preserve yaw
+raw_RotEul = rotm2eul(R0,"XYZ");
+R0 = eul2rotm([0,0,raw_RotEul(3)],"XYZ");
+%%
+[MSE,R,t] = TrICP(Model, Data, R0, t0, icpThersold, overlap);
+Motion=Rt2M(R,t);
 if MSE>MSEthersold
-    T=[];
-    warning([' cannot get match result with err lower than: ' num2str(MSEthersold)
-             ' currRawMSE: ' num2str(rawMSE)
-             ' currMSE: ' num2str(MSE)]);
-    return ;
+%     T=[];
+    warning([' cannot get match result with err lower than: ' num2str(MSEthersold),' currRawMSE: ' num2str(rawMSE),' currMSE: ' num2str(MSE)]);
+%     return ;
 end
 
-Motion=Rt2M(R,t);
+
 
 % Motion=Rt2M(R0,t0);
 % fixFrameTotalTime=toc;

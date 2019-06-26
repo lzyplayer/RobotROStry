@@ -3,12 +3,12 @@ function [iMSEi, R, t, TData, TCorr, Dthr] = TrICP(Model, Data, R, t, MoveStep, 
 
 TrMax= 1.0;
 % Data for two 3D data sets
-minPhi= 10^(5);
-PminPhi= 10^(6);
+minPhi= 10^(6);
+PminPhi= 10^(7);
 CurrStep = 0;
 TData = transform_to_global(Data, R, t);
 NS = createns(Model');
-while ((CurrStep <MoveStep) &(abs(PminPhi-minPhi)>10^(-6)))
+while ((CurrStep <MoveStep) &(abs(PminPhi-minPhi)>10^(-7)))
     CurrStep= CurrStep+1;
     [corr,TD] = knnsearch(NS,TData');
     SortTD2 = sortrows(TD.^2); % Sort the correspongding points

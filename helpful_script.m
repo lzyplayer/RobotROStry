@@ -1,3 +1,31 @@
+%% 画出所有特征点
+hold on;
+currSeedPointCloud = pointCloud(currSeed');
+transferedCloud = pctransform(currSeedPointCloud,affine3d(T'));
+transLocation = transferedCloud.Location;
+% pcshow(transferedCloud.Location,single([0 1 1]),'MarkerSize',30);%
+plot3(transLocation(:,1),transLocation(:,2),transLocation(:,3),'c*','MarkerSize',16);
+currAxes.Color=[1,1,1];
+%% 画出一次全局定位后的特征点并连线
+hold on;
+M = size(match_tarSeed,2);
+traned_match_tarSeed = T*[match_tarSeed;ones(1,M)];
+
+for i=1:size(match_tarSeed,2)
+    line([match_srcSeed(1,i);traned_match_tarSeed(1,i)],[match_srcSeed(2,i);traned_match_tarSeed(2,i)],[match_srcSeed(3,i);traned_match_tarSeed(3,i)],'Color','red','Marker','o','MarkerSize',10);  
+    
+end
+view(3)
+plot3(match_srcSeed(1,:)',match_srcSeed(2,:)',match_srcSeed(3,:)','*')
+plot3(match_srcSeed(1,1)',match_srcSeed(2,1)',match_srcSeed(3,1)','*','MarkerSize',20)
+%% 找到匹配对点序号
+mapMatchSeedIdx=[];
+mapMatchSeedIdx=[];
+for i=1:size(match_srcSeedCopy,2)
+    find(mapSeed(1,:)==match_srcSeedCopy(1,i))
+    find(currSeed(1,:)==match_tarSeedCopy(1,i))
+    %%%%%%%%%%%%%%%%%%
+end
 %% 两点距离
 p1=MotionGlobal{20}(1:2,4);
 p2=MotionGlobal{68}(1:2,4);
