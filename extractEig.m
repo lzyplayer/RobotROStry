@@ -1,4 +1,4 @@
-function [srcDesp,srcSeed,srcNorm] = extractEig(srcCloud,gridStep)
+function [srcDesp,srcSeed,srcNorm,SeedDesNum] = extractEig(srcCloud,gridStep)
 %This code is the Matlab implimentation of the paper, 
 %"Fast Descriptors and Correspondence Propagation for Robust Global Point Cloud Registration,"
 %IEEE transactions on Image Processing, 2017.
@@ -17,6 +17,7 @@ srcSeed = srcCloudDown.Location';
 K = length(radii);
 srcIdx = rangesearch(srcData',srcSeed',radii(1));
 idxSz = cellfun(@length,srcIdx,'uni',true);
+SeedDesNum = idxSz(idxSz>10);
 srcIdx = srcIdx(idxSz>10);
 srcSeed = srcSeed(:,idxSz>10);
 M = sum(idxSz>10);

@@ -3,6 +3,7 @@
 *.asv
 *.fig
 !/workResult/*
+workResult/*.fig
 codegen/*
 *.prj
 *.bag

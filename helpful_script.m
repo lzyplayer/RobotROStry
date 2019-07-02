@@ -19,14 +19,17 @@ view(3)
 plot3(match_srcSeed(1,:)',match_srcSeed(2,:)',match_srcSeed(3,:)','*')
 plot3(match_srcSeed(1,1)',match_srcSeed(2,1)',match_srcSeed(3,1)','*','MarkerSize',20)
 %% 找到匹配对点序号
-mapMatchSeedIdx=[];
-mapMatchSeedIdx=[];
-for i=1:size(match_srcSeedCopy,2)
-    find(mapSeed(1,:)==match_srcSeedCopy(1,i))
-    find(currSeed(1,:)==match_tarSeedCopy(1,i))
-    %%%%%%%%%%%%%%%%%%
+MatchSeedIdx=[];
+for i=1:size(match_srcSeed,2)
+    MatchSeedIdx=[MatchSeedIdx,[find(mapSeed(1,:)==match_srcSeed(1,i));find(currSeed(1,:)==match_tarSeed(1,i))]];
+%     mapMatchSeedIdx=[mapMatchSeedIdx,find(mapSeed(1,:)==match_srcSeed(1,i)) ];
+%     currMatchSeedIdx=[currMatchSeedIdx,];
+    
 end
 %% 两点距离
+norm(center.Position(1:2)-flow_point.Position(1:2))
+
+
 p1=MotionGlobal{20}(1:2,4);
 p2=MotionGlobal{68}(1:2,4);
 norm(p1-p2)

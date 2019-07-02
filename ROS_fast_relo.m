@@ -15,7 +15,7 @@ load("ShunYuFullCloud.mat")
 %% get from rosbag
 curr = 1;
 bag = rosbag('./rosbag/shunyu.bag');
-pcselect  = select(bag,'Time',[bag.StartTime+95 bag.StartTime+97]);
+pcselect  = select(bag,'Time',[bag.StartTime+15 bag.StartTime+17]);
 pcmsgs = readMessages(pcselect);
 pcObj  =pointCloud(readXYZ(pcmsgs{curr}));
 %%
@@ -31,9 +31,9 @@ commond='';
 
 % fig=figure('Position',[55 173 590 696]);
 %% generate map descriptor
-% downFullCloud = pcdownsample( fullcloud,'gridAverage',downsampleSize);
-% [mapDesp,mapSeed,mapNorm] = extractEig(downFullCloud,eigDGridStep);
-
+downFullCloud = pcdownsample( fullcloud,'gridAverage',downsampleSize);
+[mapDesp,mapSeed,mapNorm,mapDesNum] = extractEig(downFullCloud,eigDGridStep);
+%%%%%%%%%%%要查询mapDesNum来了解匹配过程
 %% select target
 mapInfo={mapDesp,mapSeed,mapNorm};
 commond = [];
@@ -46,8 +46,8 @@ while  isempty(commond) %&& commond~='q'
     tic;
     %% downSample and generate curr descriptor
     targetcloud = cloudsTrim(pcObj);
-%     downTargetCloud = pcdownsample( targetcloud,'gridAverage',downsampleSize);
-%     [currDesp,currSeed,currNorm] = extractEig(downTargetCloud,eigDGridStep);
+    downTargetCloud = pcdownsample( targetcloud,'gridAverage',downsampleSize);
+    [currDesp,currSeed,currNorm] = extractEig(downTargetCloud,eigDGridStep);
     currInfo={currDesp,currSeed,currNorm};
     %% trimmed raw postion input 
 %     piror_location = [0 ,5 ]; %x,y

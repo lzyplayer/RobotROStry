@@ -70,12 +70,14 @@ threshold = gridStep*gridStep;
         if(sum(CS)<3)
             continue;
         end
-        if n==126
-            1==1;
-        end
+       
         
         match_srcSeed = match_srcSeed(:,CS);
         match_tarSeed = match_tarSeed(:,CS);
+         if n==308
+            1==1;
+        end
+        
         [T, Eps] = estimateRigidTransform(match_tarSeed, match_srcSeed);
         tarEst = T*[srcSeed;ones(1,M)];
         tarEst = tarEst(1:3,:);
@@ -94,9 +96,9 @@ threshold = gridStep*gridStep;
         continue;
       end
     curr_Rot = rotm2eul(tform{i}(1:3,1:3),"XYZ");
-%     if i==96
-%         1==1;
-%     end
+    if i==308
+        1==1;
+    end
     %%rot of x and y must less than 1.5pi
     if max(abs(curr_Rot(1)),abs(curr_Rot(2)))>1.5
         Err(i)=inf;

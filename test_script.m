@@ -1,4 +1,27 @@
 % clc;clear;close all;
+%% 2d regis with input icp
+rotEul = rotm2eul(T(1:3,1:3),'XYZ');
+R0 = [cos(rotEul(3)) -sin(rotEul(3))
+      sin(rotEul(3)) cos(rotEul(3))  ];
+noiseRot=(rand()*2*pi-pi)*0.1;
+noiseMat= [cos(noiseRot),-sin(noiseRot);sin(noiseRot),cos(noiseRot)  ];
+R0 = R0*noiseMat;
+t0 = T(1:2,4);
+t0(1)=t0(1)+0.5;
+t0(2)=t0(2)+0.5;
+downFullCloud = pcdownsample( fullcloud,'gridAverage',0.3);
+downcurrCloud = pcdownsample( pcObj,'gridAverage',0.1);
+dfcloud2d = down3dto2d(downFullCloud,0,4,t0',40);
+dccloud2d = down3dto2d(downcurrCloud,0,4);
+tic
+[R,t,trimRate,MSE] = fastTrICP2D(dfcloud2d', dccloud2d' ,R0,t0,0.95,1,100);  
+toc
+transfered_points = [[R0,t0];[0,0,1]]*[dccloud2d,ones(size(dccloud2d,1),1)]';
+
+axes=pcshow(transfered_points',[0,0,0]);hold on;
+pcshow([dfcloud2d,ones(size(dfcloud2d,1),1)]);
+axes.Color=[1,1,1];
+
 %% 删去部分点云
 tempor=({clouds{1:30},clouds{40:end}});
 clouds= tempor;
