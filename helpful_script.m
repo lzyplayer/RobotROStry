@@ -1,4 +1,4 @@
-%% »­³öËùÓÐÌØÕ÷µã
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 hold on;
 currSeedPointCloud = pointCloud(currSeed');
 transferedCloud = pctransform(currSeedPointCloud,affine3d(T'));
@@ -6,7 +6,7 @@ transLocation = transferedCloud.Location;
 % pcshow(transferedCloud.Location,single([0 1 1]),'MarkerSize',30);%
 plot3(transLocation(:,1),transLocation(:,2),transLocation(:,3),'c*','MarkerSize',16);
 currAxes.Color=[1,1,1];
-%% »­³öÒ»´ÎÈ«¾Ö¶¨Î»ºóµÄÌØÕ÷µã²¢Á¬Ïß
+%% ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½È«ï¿½Ö¶ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã²¢ï¿½ï¿½ï¿½ï¿½
 hold on;
 M = size(match_tarSeed,2);
 traned_match_tarSeed = T*[match_tarSeed;ones(1,M)];
@@ -18,7 +18,7 @@ end
 view(3)
 plot3(match_srcSeed(1,:)',match_srcSeed(2,:)',match_srcSeed(3,:)','*')
 plot3(match_srcSeed(1,1)',match_srcSeed(2,1)',match_srcSeed(3,1)','*','MarkerSize',20)
-%% ÕÒµ½Æ¥Åä¶ÔµãÐòºÅ
+%% ï¿½Òµï¿½Æ¥ï¿½ï¿½Ôµï¿½ï¿½ï¿½ï¿½
 MatchSeedIdx=[];
 for i=1:size(match_srcSeed,2)
     MatchSeedIdx=[MatchSeedIdx,[find(mapSeed(1,:)==match_srcSeed(1,i));find(currSeed(1,:)==match_tarSeed(1,i))]];
@@ -26,27 +26,41 @@ for i=1:size(match_srcSeed,2)
 %     currMatchSeedIdx=[currMatchSeedIdx,];
     
 end
-%% Á½µã¾àÀë
+
+
+%% anime show
+axes = pcshow(clouds{1});
+cscatter = axes.Children;
+for i=87:88
+    currPoints = clouds{i}.Location;
+    cscatter.XData=currPoints(:,1);
+    cscatter.YData=currPoints(:,2);
+    cscatter.ZData=currPoints(:,3);
+    cscatter.CData=currPoints(:,3);
+    drawnow();
+    pause(1);
+end
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 norm(center.Position(1:2)-flow_point.Position(1:2))
 
 
 p1=MotionGlobal{20}(1:2,4);
 p2=MotionGlobal{68}(1:2,4);
 norm(p1-p2)
-%% ÒÀ´ÎÕ¹Ê¾
+%% ï¿½ï¿½ï¿½ï¿½Õ¹Ê¾
 hold off
 for i=145:length(clouds)
     pcshow(clouds{i});
 end
 
 return 
-%% ÕæÖµ»·¾³Õ¹Ê¾
+%% ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Õ¹Ê¾
 load hannover2_MZ.mat
 load hannover2_GrtM_z.mat
 routeDisplay(GrtM,'g-d',false,[48,55]);%(1:182)(1:532)799,490
 obtainResult(clouds,GrtM(1:100),true);
 
-%% Õ¹Ê¾Ïà¶ÔÔË¶¯Ä³¶Ô
+%% Õ¹Ê¾ï¿½ï¿½ï¿½ï¿½Ë¶ï¿½Ä³ï¿½ï¿½
 tosee=57;
 % for currsee=tosee:tosee+8
 figure;
@@ -54,8 +68,8 @@ pcshow(trclouds{tosee-1});hold on;
 pcshow(pctransform(trclouds{tosee},affine3d(relativeMotionRe{tosee}')));%historyAccMotion{pairnum}'
 % end
 
-%% È«¾Ö·½ÏòÕ¹ÏÖ£¬ºÍÂ·¾¶½áºÏÓÃ
-% ori=[0 0 0 ;100 100 100 ];%È«¾Ö¹Û²â·½Ïò
+%% È«ï¿½Ö·ï¿½ï¿½ï¿½Õ¹ï¿½Ö£ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+% ori=[0 0 0 ;100 100 100 ];%È«ï¿½Ö¹Û²â·½ï¿½ï¿½
 ori=[0 0 0 ;0.01 0.01 0.01 ];
 
 for i=1:length(MotionGlobal)
@@ -65,7 +79,7 @@ for i=1:length(MotionGlobal)
     hold on
 end
 
-%% Õ¹Ê¾Â·¾¶Í¼
+%% Õ¹Ê¾Â·ï¿½ï¿½Í¼
 
 route=[];
 for p=1:length(MotionGlobal)
@@ -78,17 +92,17 @@ zlabel('z');
 % axis([-3000 3000 -3000 3000 -3000 3000 ]);
 axis([-0.2 0.2 -0.2 0.2 -0.2 0.2 ]);
 
-% %testµÂ¹úÊÒÄÚµãÔÆ
+% %testï¿½Â¹ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½
 % scanTest=load('./data/scanTest.3d');
 % cloudTest=pointCloud(scanTest(:,1:3));
 % pcshow(cloudTest);
 % 
 
-%% Á½µã²î¾à¼ÆËã
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 tar = [-20.84 6.196];
 sta = [-18.04 5.256];
 addt= tar-sta
-%% ÕæÖµÎó²î
+%% ï¿½ï¿½Öµï¿½ï¿½ï¿½
 %scannum=length(clouds);
 % for i=1:scannum
 %     Data_{i}=clouds{i}.Location;
@@ -116,13 +130,13 @@ addt= tar-sta
 % close all;
 % clear;
 
-%% ¶ÁÈ¡Õ¹Ê¾µ¥¸ö
+%% ï¿½ï¿½È¡Õ¹Ê¾ï¿½ï¿½ï¿½ï¿½
 % datapath='./data/red_room/map2.ply';
 % clouds=pcread(datapath);
 % 
 % pcshow(clouds);
 
-%% Õ¹Ê¾Åä×¼
+%% Õ¹Ê¾ï¿½ï¿½×¼
 % s=30;
 close all
 figure('position',[-1439 76 1440 823])
@@ -134,13 +148,13 @@ for i=114:115
     pcshow(pctransform( trclouds{i},affine3d(currMotion')));
     
 end
-%% Õ¹Ê¾Åä×¼
+%% Õ¹Ê¾ï¿½ï¿½×¼
 close all
 mergeGridStep=0.025;
 figure('position',[-1439 76 1440 823])
 hold on;
 obtainResult(trclouds,MotionGlobalRe(1:90),false,mergeGridStep);
-%% Ïà¶ÔÔË¶¯Õ¹Ê¾
+%% ï¿½ï¿½ï¿½ï¿½Ë¶ï¿½Õ¹Ê¾
 close all
 figure('position',[-1439 76 1440 823])
 mo=118;
@@ -156,12 +170,12 @@ pcshow(pctransform( clouds{i},affine3d(relativeMotionRe{i}')));
 %   hold on;
 
 
-%% ½µÔë
+%% ï¿½ï¿½ï¿½ï¿½
 % for i=1:length(cloudsCopy)
 % [clearClouds{i},inlinerOnes{i},outlierOnes{i}]=pcdenoise(cloudsCopy{i});
 % end
 
-%% Õ¹Ê¾ÔëÉù
+%% Õ¹Ê¾ï¿½ï¿½ï¿½ï¿½
 % s=30;
 % for i=1:length(cloudsCopy)
 %     curMotion=p(i).M;

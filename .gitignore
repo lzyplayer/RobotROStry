@@ -7,3 +7,6 @@ workResult/*.fig
 codegen/*
 *.prj
 *.bag
+*.slxc
+slprj
+*.pcd

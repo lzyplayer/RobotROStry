@@ -1,7 +1,7 @@
 clc;clear;close all;
 rosshutdown;
-rosinit('192.168.67.129');
-rosSuber=rossubscriber('/velodyne_points',@rosPCCallback);
+rosinit('localhost');
+rosSuber=rossubscriber('/horizontal_laser_3d',@rosPCCallback);
 global pcObj
 % if ~isempty(pcObj)
 %     pcshow(pcObj);
@@ -25,8 +25,8 @@ while  isempty(commond) %&& commond~='q'
     disp(['cloud ' int2str(i) ' stored!' ])
 %     pcshow(clouds{i});
 end
-name='scienceBuild_reGet.mat';
-save(name,'clouds');
+% name='wuhan_surround.mat';
+% save(name,'clouds');
 disp(['clouds saved as ' name '!' ])
 
 rosshutdown
