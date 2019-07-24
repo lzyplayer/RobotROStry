@@ -10,3 +10,5 @@ codegen/*
 *.slxc
 slprj
 *.pcd
+*.m~
+*.zip

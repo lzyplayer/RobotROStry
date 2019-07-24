@@ -39,7 +39,7 @@ TCorr = SortCorrTD(1:TrLength, 1:2);     % Trim the corresponding points accordi
 % Register MData with TData
 [R, t] = reg(Model, Data,TCorr);
 % To obtain the transformation data
-TData = transform_to_global(Data, R, t);
+TData = transform_to_global2d(Data, R, t);
 
 %%%%%%%%%%%%%%% Calculate the registration matrix %%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%% T(TData)->MData %%%%%%%%%%%%%%%%%%%%%%%%%

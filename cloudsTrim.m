@@ -3,7 +3,7 @@ function [trimedCloud] = cloudsTrim(oriCloud)
 %   �˴���ʾ��ϸ˵��
 
     xyzPoints = oriCloud.Location;
-    GroundSkyPointer = xyzPoints(:,3)<23 ;
+    GroundSkyPointer = xyzPoints(:,3)<0|xyzPoints(:,3)>4 ;
     selectPoints = xyzPoints(~(GroundSkyPointer ),:);
     trimedCloud = pcdenoise( pointCloud(selectPoints));
 

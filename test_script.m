@@ -1,5 +1,18 @@
 % clc;clear;close all;
+%% get rid of ground
+for i=1:length(clouds)
+    maxDistance = 0.08;
+    referenceVector = [0,0,1];
+    maxAngularDistance = 10;
+    [model1,inlierIndices,outlierIndices] = pcfitplane(clouds{i},...
+                maxDistance,referenceVector,maxAngularDistance);
+    ground{i} = select(clouds{i},inlierIndices);
+    objects{i} = select(clouds{i},outlierIndices);
+    
+end
 %% 2d regis with input icp
+T=eye(4)
+
 rotEul = rotm2eul(T(1:3,1:3),'XYZ');
 R0 = [cos(rotEul(3)) -sin(rotEul(3))
       sin(rotEul(3)) cos(rotEul(3))  ];
@@ -9,28 +22,33 @@ R0 = R0*noiseMat;
 t0 = T(1:2,4);
 t0(1)=t0(1)+0.5;
 t0(2)=t0(2)+0.5;
-downFullCloud = pcdownsample( fullcloud,'gridAverage',0.3);
-downcurrCloud = pcdownsample( pcObj,'gridAverage',0.1);
-dfcloud2d = down3dto2d(downFullCloud,0,4,t0',40);
-dccloud2d = down3dto2d(downcurrCloud,0,4);
+dfcloud2d = down3dto2d(fullcloud,0,4,t0',40);
+dccloud2d = down3dto2d(pcObj,0,4);
+full_cloud2d = pointCloud([dfcloud2d,zeros(length(dfcloud2d),1)]);
+curr_cloud2d = pointCloud([dccloud2d,zeros(length(dccloud2d),1)]);
+downFullCloud = pcdownsample( full_cloud2d,'gridAverage',0.1);
+downcurrCloud = pcdownsample( curr_cloud2d,'gridAverage',0.05);
 tic
-[R,t,trimRate,MSE] = fastTrICP2D(dfcloud2d', dccloud2d' ,R0,t0,0.95,1,100);  
+[R,t,trimRate,MSE] = fastTrICP2D(downFullCloud.Location(:,1:2)', downcurrCloud.Location(:,1:2)' ,R0,t0,0.95,1,100);  
 toc
-transfered_points = [[R0,t0];[0,0,1]]*[dccloud2d,ones(size(dccloud2d,1),1)]';
 
+% tic
+% [R,t,trimRate,MSE] = fastTrICP2D(dfcloud2d', dccloud2d' ,R0,t0,0.95,1,100);  
+% toc
+transfered_points = [[R,t];[0,0,1]]*[dccloud2d,ones(size(dccloud2d,1),1)]';
 axes=pcshow(transfered_points',[0,0,0]);hold on;
 pcshow([dfcloud2d,ones(size(dfcloud2d,1),1)]);
 axes.Color=[1,1,1];
 
-%% É¾È¥²¿·ÖµãÔÆ
+%% É¾È¥ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½
 tempor=({clouds{1:30},clouds{40:end}});
 clouds= tempor;
 
-%% »¯ÎªµãÔÆ¸ñÊ½
+%% ï¿½ï¿½Îªï¿½ï¿½ï¿½Æ¸ï¿½Ê½
 for i=1:length(clouds)
     clouds{i}=pointCloud(clouds{i});
 end
-%% È¥³ýÔëÉù
+%% È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 load('scienceBuild_raw0-3.mat')
 scannum=length(clouds);
 for i=1:scannum
@@ -41,14 +59,14 @@ for i=1:scannum
     pointSelect=~(pointsGround|pointRoof); %~(pointsFar | pointsGround);
     clouds{i}=pointCloud(indata(pointSelect,1:3));
 end
-%% »¯¾ø¶ÔÎªÏà¶Ô
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½
 relativeMotionRe=cell(1,length(MotionGlobal));
 relativeMotionRe{1}=eye(4);
 for i=2:length(MotionGlobal)
     relativeMotionRe{i} = MotionGlobal{i-1} \ MotionGlobal{i} ;
 end
 
-%% »¯Ïà¶ÔÎª¾ø¶Ô
+%% ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
 close all;
 figure('position',[-1439 76 1440 823])
 MotionGlobal=cell(1,length(relativeMotion));
@@ -61,18 +79,18 @@ mergeGridStep = 0.1;
 % routeDisplay(MotionGlobalRe,'r-o',false,[50,55,60]);
 obtainResult(trclouds,MotionGlobal,false,mergeGridStep);
 
-%% Ìæ»»ÆÆËðÖ¡
+%% ï¿½æ»»ï¿½ï¿½ï¿½ï¿½Ö¡
 problemFrame=76;
 relativeMotion{problemFrame} = eye(4);
 relativeMotion{problemFrame+1} = Motion;
 clouds{problemFrame}=clouds{problemFrame-1};
 
-%% ÕæÖµ´¦Àí
+%% ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
 load hannover_GrtM_z_ConvertNeed.mat
 % load hannover2_GrtM_ori.mat
 load hannover2_result.mat
 load hannover2_MZ.mat
-% ÖØ×éÎª¾ØÕó
+% ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
 % for i=1:size(GrtM_ori,1)
 %     GrtM_ori_m{i}=reshape( GrtM_ori(i,:),4,4);
 % end
@@ -117,11 +135,11 @@ end
 % obtain_model_hannover1(clouds,newMotion);
 
 
-%% Ïà¶ÔÎ»ÖÃ±ä»¯ÏÞÖÆ
+%% ï¿½ï¿½ï¿½Î»ï¿½Ã±ä»¯ï¿½ï¿½ï¿½ï¿½
 for i=2:length(relativeMotion)
     distance(i)=norm(  relativeMotion{i}(1:3,4));
 end
-%% Õ¹Ê¾historyAccMotionÖÐÒ»¶Ô
+%% Õ¹Ê¾historyAccMotionï¿½ï¿½Ò»ï¿½ï¿½
 figure;
 toseeACC=8;
 low=historyAccMotion{toseeACC,2};
@@ -130,7 +148,7 @@ pcshow(clouds{low});hold on;
 pcshow(pctransform(clouds{high},affine3d(historyAccMotion{toseeACC}')));%historyAccMotion{pairnum}'
 
 
-%% ·Ö±ðÕ¹Ê¾2Ö¡
+%% ï¿½Ö±ï¿½Õ¹Ê¾2Ö¡
 figure;
 a=17;
 pcshow(trclouds{a});
@@ -141,7 +159,7 @@ b=16;
 pcshow(trclouds{b})
 % pcshow(pctransform( clouds{b},affine3d(MotionGlobal{b}')));
 
-% pc×Ô´øICpËã·¨
+% pcï¿½Ô´ï¿½ICpï¿½ã·¨
 gridstep=0.01;
 readnum=31;
 overlap = 0.4;
@@ -150,19 +168,19 @@ s=30;
 filepath='./data/local_frame/';
 filePrefix='Hokuyo_';
 load trimOutside;
-% ×Ô´øÅä×¼Ð§¹û²»ºÃ
+% ï¿½Ô´ï¿½ï¿½ï¿½×¼Ð§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 readyCloud1=pcdownsample(pcdenoise(clouds{4}),'gridAverage',gridstep);
 readyCloud2=pcdownsample(pcdenoise(clouds{3}),'gridAverage',gridstep);
 [motion,result]=pcregrigid(readyCloud2,readyCloud1,'Tolerance',[0.01/s,0.009]);
 pcshow(result);
 hold on;
 
-% ÏàÁÚÕ¹ÏÖ
+% ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½
 pcshow(clouds{4});
 hold on;
 pcshow(pctransform(clouds{3},currMotion2next));
 
-%ÎÒÃÇICP£¬¼ÓÀûÓÃÉÏ»ØÔË¶¯
+%ï¿½ï¿½ï¿½ï¿½ICPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï»ï¿½ï¿½Ë¶ï¿½
 d=13;
 m=14;
 readyCloud1=pcdownsample(pcdenoise(clouds{d}),'gridAverage',gridstep);
@@ -176,7 +194,7 @@ pcshow(pctransform(clouds{d},affine3d(motion')));
 
 
 
-%% Ä³Á½Ö¡eigÆ¥Åä
+%% Ä³ï¿½ï¿½Ö¡eigÆ¥ï¿½ï¿½
 addpath('./flann/');
 addpath('./estimateRigidTransform')
 s=1;
@@ -207,7 +225,7 @@ pcshow(pctransform(trclouds{da},affine3d(Motion')));
 hold on;
 pcshow(trclouds{mo});
 % relativeMotionRe{mo}=Motion;
-%% Õ¹Ê¾Ä³Ö¡ºÍµÚÒ»Ö¡Åä×¼
+%% Õ¹Ê¾Ä³Ö¡ï¿½Íµï¿½Ò»Ö¡ï¿½ï¿½×¼
 close all;
 tar=3;
 pcshow(clouds{1});
@@ -215,7 +233,7 @@ hold on;
 pcshow(pctransform(clouds{tar},affine3d( Motion')));
 
 
-% %% Ä³Ö¡ÕæÖµ±È¶Ô 
+% %% Ä³Ö¡ï¿½ï¿½Öµï¿½È¶ï¿½ 
 % load outside_GRT;
 % tar =28;
 % src=1;
@@ -231,12 +249,12 @@ cellfun(@(x) {relativeMotion{x},x-1,x} , fixedPointCloudN,'UniformOutput',false 
 cell2mat(fixMotion)
 [historyAccMotion;fixMotion{1}]
 
-%% ÇóÁ½µã¾àÀë
+%% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 p1=[-1.262 0.6227]
 p2=[0,0]
 norm(p2-p1)
 
-%% µã¼ä¹ØÏµÄâºÏ
+%% ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½
 x=historyCameraPosePair(:,2)-historyCameraPosePair(:,1);
 y=historyCameraPosePair(:,4);
 z=historyCameraPosePair(:,3);
