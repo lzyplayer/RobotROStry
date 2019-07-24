@@ -29,16 +29,19 @@ end
 
 
 %% anime show
+
+
+clouds=objects;
 axes = pcshow(clouds{1});
 cscatter = axes.Children;
-for i=87:88
+for i=1:85
     currPoints = clouds{i}.Location;
     cscatter.XData=currPoints(:,1);
     cscatter.YData=currPoints(:,2);
     cscatter.ZData=currPoints(:,3);
     cscatter.CData=currPoints(:,3);
     drawnow();
-    pause(1);
+    pause(0.5);
 end
 %% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?
 norm(center.Position(1:2)-flow_point.Position(1:2))
