@@ -6,7 +6,7 @@ transLocation = transferedCloud.Location;
 % pcshow(transferedCloud.Location,single([0 1 1]),'MarkerSize',30);%
 plot3(transLocation(:,1),transLocation(:,2),transLocation(:,3),'c*','MarkerSize',16);
 currAxes.Color=[1,1,1];
-%% ����һ��ȫ�ֶ�λ��������㲢����
+%% ����һ��ȫ�ֶ�λ��������㲢����?
 hold on;
 M = size(match_tarSeed,2);
 traned_match_tarSeed = T*[match_tarSeed;ones(1,M)];
@@ -40,7 +40,7 @@ for i=87:88
     drawnow();
     pause(1);
 end
-%% �������
+%% �������?
 norm(center.Position(1:2)-flow_point.Position(1:2))
 
 
@@ -60,15 +60,23 @@ load hannover2_GrtM_z.mat
 routeDisplay(GrtM,'g-d',false,[48,55]);%(1:182)(1:532)799,490
 obtainResult(clouds,GrtM(1:100),true);
 
-%% չʾ����˶�ĳ��
+%% չʾ����˶�ĳ��?
 tosee=57;
 % for currsee=tosee:tosee+8
 figure;
 pcshow(trclouds{tosee-1});hold on;
 pcshow(pctransform(trclouds{tosee},affine3d(relativeMotionRe{tosee}')));%historyAccMotion{pairnum}'
 % end
+%% temp
+figure;
+tosee=84;
+% for currsee=tosee:tosee+8
+figure;
+pcshow(clouds{tosee-1});hold on;
+pcshow(pctransform(clouds{tosee},affine3d(accMotion{97,1}')));%historyAccMotion{pairnum}'
+% end
 
-%% ȫ�ַ���չ�֣���·�������
+%% ȫ�ַ���չ�֣���·�������?
 % ori=[0 0 0 ;100 100 100 ];%ȫ�ֹ۲ⷽ��
 ori=[0 0 0 ;0.01 0.01 0.01 ];
 
@@ -98,11 +106,11 @@ axis([-0.2 0.2 -0.2 0.2 -0.2 0.2 ]);
 % pcshow(cloudTest);
 % 
 
-%% ���������
+%% ���������?
 tar = [-20.84 6.196];
 sta = [-18.04 5.256];
 addt= tar-sta
-%% ��ֵ���
+%% ��ֵ���?
 %scannum=length(clouds);
 % for i=1:scannum
 %     Data_{i}=clouds{i}.Location;
@@ -154,7 +162,7 @@ mergeGridStep=0.025;
 figure('position',[-1439 76 1440 823])
 hold on;
 obtainResult(trclouds,MotionGlobalRe(1:90),false,mergeGridStep);
-%% ����˶�չʾ
+%% ����˶�չ�?
 close all
 figure('position',[-1439 76 1440 823])
 mo=118;

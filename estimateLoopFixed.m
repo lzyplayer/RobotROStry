@@ -9,6 +9,8 @@ currPair=[];
 for i=1:curr-LoopDectNum
 
     distance=norm(globalCameraPosition(curr,1:2)-globalCameraPosition(i,1:2));%     maxDis=0.345*(curr-i)-19.4;         %sqrt(curr-lastLoopNum)*23;
+    
+    
     if(distance)< maxDis
         pairInfo=[i curr distance];
         currPair=[currPair;pairInfo];
