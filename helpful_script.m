@@ -1,3 +1,22 @@
+%% show 2 global
+
+
+clouds=centerClouds;
+axes = pcshow([0,0,0]);
+cscatter = axes.Children;
+for i=18:length(MotionGlobal)-1
+    cloud1 = pctransform(clouds{i},affine3d(MotionGlobal{i}'));
+    cloud2 = pctransform(clouds{i+1},affine3d(MotionGlobal{i+1}'));
+    currPoints = [cloud1.Location;cloud2.Location];
+    cscatter.XData=currPoints(:,1);
+    cscatter.YData=currPoints(:,2);
+    cscatter.ZData=currPoints(:,3);
+    cscatter.CData=currPoints(:,3);
+    drawnow();
+%     pause(5);
+    fprintf("%i" ,i);
+    input("show next?")
+end
 %% ��������������
 hold on;
 currSeedPointCloud = pointCloud(currSeed');
@@ -6,7 +25,7 @@ transLocation = transferedCloud.Location;
 % pcshow(transferedCloud.Location,single([0 1 1]),'MarkerSize',30);%
 plot3(transLocation(:,1),transLocation(:,2),transLocation(:,3),'c*','MarkerSize',16);
 currAxes.Color=[1,1,1];
-%% ����һ��ȫ�ֶ�λ��������㲢����?
+%% ����һ��ȫ�ֶ�λ��������㲢����??
 hold on;
 M = size(match_tarSeed,2);
 traned_match_tarSeed = T*[match_tarSeed;ones(1,M)];
@@ -31,19 +50,21 @@ end
 %% anime show
 
 
-clouds=objects;
+clouds=centerClouds;
 axes = pcshow(clouds{1});
 cscatter = axes.Children;
-for i=1:85
+for i=18:20
     currPoints = clouds{i}.Location;
     cscatter.XData=currPoints(:,1);
     cscatter.YData=currPoints(:,2);
     cscatter.ZData=currPoints(:,3);
     cscatter.CData=currPoints(:,3);
     drawnow();
-    pause(0.5);
+%     pause(5);
+    fprintf("%i" ,i);
+    input("show next?")
 end
-%% �������?
+%% �������??
 norm(center.Position(1:2)-flow_point.Position(1:2))
 
 
@@ -63,7 +84,7 @@ load hannover2_GrtM_z.mat
 routeDisplay(GrtM,'g-d',false,[48,55]);%(1:182)(1:532)799,490
 obtainResult(clouds,GrtM(1:100),true);
 
-%% չʾ����˶�ĳ��?
+%% չʾ����˶�ĳ��??
 tosee=57;
 % for currsee=tosee:tosee+8
 figure;
@@ -79,7 +100,7 @@ pcshow(clouds{tosee-1});hold on;
 pcshow(pctransform(clouds{tosee},affine3d(accMotion{97,1}')));%historyAccMotion{pairnum}'
 % end
 
-%% ȫ�ַ���չ�֣���·�������?
+%% ȫ�ַ���չ�֣���·�������??
 % ori=[0 0 0 ;100 100 100 ];%ȫ�ֹ۲ⷽ��
 ori=[0 0 0 ;0.01 0.01 0.01 ];
 
@@ -109,11 +130,11 @@ axis([-0.2 0.2 -0.2 0.2 -0.2 0.2 ]);
 % pcshow(cloudTest);
 % 
 
-%% ���������?
+%% ���������??
 tar = [-20.84 6.196];
 sta = [-18.04 5.256];
 addt= tar-sta
-%% ��ֵ���?
+%% ��ֵ���??
 %scannum=length(clouds);
 % for i=1:scannum
 %     Data_{i}=clouds{i}.Location;
@@ -165,7 +186,7 @@ mergeGridStep=0.025;
 figure('position',[-1439 76 1440 823])
 hold on;
 obtainResult(trclouds,MotionGlobalRe(1:90),false,mergeGridStep);
-%% ����˶�չ�?
+%% ����˶�չ�?
 close all
 figure('position',[-1439 76 1440 823])
 mo=118;

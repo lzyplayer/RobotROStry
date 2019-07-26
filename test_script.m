@@ -59,14 +59,14 @@ for i=1:scannum
     pointSelect=~(pointsGround|pointRoof); %~(pointsFar | pointsGround);
     clouds{i}=pointCloud(indata(pointSelect,1:3));
 end
-%% ������Ϊ���
+%% ������Ϊ���?
 relativeMotionRe=cell(1,length(MotionGlobal));
 relativeMotionRe{1}=eye(4);
 for i=2:length(MotionGlobal)
     relativeMotionRe{i} = MotionGlobal{i-1} \ MotionGlobal{i} ;
 end
 
-%% �����Ϊ����
+%% �����Ϊ����?
 close all;
 figure('position',[-1439 76 1440 823])
 MotionGlobal=cell(1,length(relativeMotion));
@@ -135,7 +135,7 @@ end
 % obtain_model_hannover1(clouds,newMotion);
 
 
-%% ���λ�ñ仯����
+%% ���λ�ñ仯����?
 for i=2:length(relativeMotion)
     distance(i)=norm(  relativeMotion{i}(1:3,4));
 end
@@ -197,6 +197,7 @@ pcshow(pctransform(clouds{d},affine3d(motion')));
 %% ĳ��֡eigƥ��
 addpath('./flann/');
 addpath('./estimateRigidTransform')
+
 s=1;
 res=1;
 % ModelCloud=clouds{1};
@@ -249,12 +250,12 @@ cellfun(@(x) {relativeMotion{x},x-1,x} , fixedPointCloudN,'UniformOutput',false 
 cell2mat(fixMotion)
 [historyAccMotion;fixMotion{1}]
 
-%% ���������
+%% ���������?
 p1=[-1.262 0.6227]
 p2=[0,0]
 norm(p2-p1)
 
-%% ����ϵ���
+%% ����ϵ���?
 x=historyCameraPosePair(:,2)-historyCameraPosePair(:,1);
 y=historyCameraPosePair(:,4);
 z=historyCameraPosePair(:,3);

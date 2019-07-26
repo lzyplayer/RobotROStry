@@ -33,6 +33,7 @@ while(isempty(T)&&fixtime<5)
     end
     fixtime=fixtime+1;
     if isempty(T)
+        
         continue
     end
     R0= T(1:3,1:3);

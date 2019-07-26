@@ -1,15 +1,24 @@
-% clc;clear;close all;
-load('../ShunYuFullCloud.mat');
-pcwrite(fullcloud,'sy_factory.pcd','Encoding','ascii');
-curr_pc = pcread('sy_factory.pcd');
-pcshow(curr_pc);
-
-
-pcwrite(fullcloud,'shunYuFactory.pcd','Encoding','ascii');
-pcwrite(pcObj,'shunYu1.pcd','Encoding','ascii');
-
 %%
-ok = [clouds(1:87),clouds_temp(1:5),clouds(88:end-1)]
+for i=24:39
+    relativeMotion{i}=MotionGlobal{i-1}\MotionGlobal{i};
+end
+for i=23:39
+    MotionGlobal{i}=MotionGlobal{i-1}*relativeMotion{i};
+end
+
+% clc;clear;close all;
+
+a=23;
+b=39;
+overlap=0.5;
+eigDGridStep=1;
+clouds = centerClouds;
+[rM23_39,mse,tryTimes]=matchFix(clouds{a},clouds{b},overlap,eigDGridStep,res,a,icpToler);
+pcshow(clouds{a});
+hold on;
+pcshow(pctransform(clouds{b},affine3d(rM23_39')));
+%%
+ok = [clouds(1:87),clouds_temp(1:5),clouds(88:end-1)];
 clouds = ok;
 
 %da
@@ -41,5 +50,5 @@ ecloud  = pointCloud([points2d,zeros(size(points2d,1),1)]);
 downecloud = pcdownsample(ecloud,'gridAverage',0.03);
 pcwrite(downecloud,'shunYu1.pcd','Encoding','ascii');
 
-
+pcwrite(fullCloudCopy,'wuhan_factory.pcd','Encoding','ascii');
 % pcwrite(pcdownsample(clouds{1},'gridAverage',0.05),'shunyu1.pcd','Encoding','ascii');

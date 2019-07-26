@@ -1,16 +1,24 @@
+clc;clear;close all;
 load wuhan_factory_withoutground.mat
-gridStep=0.7;
-downsamplegrid = 0.02;
+addpath('./flann/');
+addpath('./estimateRigidTransform');
+
+
+gridStep=2;
+downsamplegrid = 0.05;
 midlap = 5;
 res=1;
-MSEthersold=20;
-overlap=0.8;
+MSEthersold=0.4;
+overlap=0.6;
+goodMSEthreshold=0.01;
 %%
-trclouds = pcTrim(clouds,100,[-100 100],downsamplegrid);
+trclouds = pcTrim(objects,100,[-100 100],downsamplegrid);
 %%
-N=length(clouds);
-centerClouds={};
-for i=0:N/midlap-1
-    centerClouds{i+1} = accmulatePC(trclouds,i*midlap+1,midlap,overlap,gridStep,res,MSEthersold,downsamplegrid);
+N=length(objects);
+for i=18%0:N/midlap-1
+    centerClouds{i+1} = accmulatePC(trclouds,i*midlap+1,midlap,overlap,gridStep,res,MSEthersold,downsamplegrid,goodMSEthreshold);
     pcshow(centerClouds{i+1});
+%     input("next")
 end
+
+%  centerClouds{i+1}=fullcloudCopy;

@@ -1,17 +1,16 @@
 clc;clear;close all;
-load ("wuhan_surround_withoutground.mat");
-load("wuhan1-85.mat");
+load ("wuhan_centeraled_cloud.mat");
 addpath('./flann/');
 addpath('./estimateRigidTransform');
 %% argument
 currLoop=0;
 eigDGridStep = 1;
-overlap = 0.7;
+overlap = 0.6;
 icpToler= 0.05;
 mergeStep=0.05;
 % ICPthreashold= 50;
 maxPairDistance=2;
-res= 10;
+res= 1;
 MSEHold=icpToler;
 % s=1;
 LoopDectNum=5;
@@ -22,21 +21,21 @@ cameraPosePair=[];
 globalCameraPosition=[0,0,0];
 relativeMotion{1}=eye(4);
 MotionGlobal{1}=eye(4);
-%%
-for i=2:75
-    relativeMotion{i}=(MotionGlobal{i-1})\MotionGlobal{i};
-    globalCameraPosition(i,:)=MotionGlobal{i}(1:3,4)';
-end
+clouds = centerClouds;
 %%
 hold on
 % reScatter = reAxes.Children;
-N=84;
-for i=75:N
+N=length(clouds);
+for i=23:N
     fixS=clock;
     [relativeMotion{i},MSE(i,1),tryTimes]=matchFix(clouds{i-1},clouds{i},overlap,eigDGridStep,res,i,icpToler);
-    MotionGlobal{i}=MotionGlobal{i-1}*relativeMotion{i};
+%     MotionGlobal{i}=MotionGlobal{i-1}*relativeMotion{i};
     globalCameraPosition(i,:)=MotionGlobal{i}(1:3,4)';
-
+    
+    close all;
+    pcshow(clouds{i-1});hold on;
+    pcshow(pctransform(clouds{i},affine3d(relativeMotion{i}')));%h
+    
     
     fixE=clock;
     fixtime=etime(fixE,fixS);
@@ -44,19 +43,19 @@ for i=75:N
     disp(['retry times: ' num2str(tryTimes)])
     disp('');
     
-    %% »Ø»·¼ì²â¿ªÊ¼
+    %% ï¿½Ø»ï¿½ï¿½ï¿½â¿ªÊ?
     LoopPairNum=size(cameraPosePair,1);
     if(size(globalCameraPosition,1)>LoopDectNum)
         [cameraPosePair,LoopFlag]=estimateLoopFixed(globalCameraPosition,cameraPosePair,LoopDectNum,LoopFlag,maxPairDistance);
     end
-    %% »Ø»·½áÊø¼ì²â_ÌØÕ÷µãÆ¥Åä_Æ¥Åä¶ÔÀ©Õ¹
+    %% ï¿½Ø»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ï¿½_Æ¥ï¿½ï¿½ï¿½ï¿½ï¿½Õ?
     if((LoopPairNum==size(cameraPosePair,1) ||i==N) && (LoopFlag==1 ))
         currLoop=currLoop+1;
         routeDisplay(MotionGlobal,'b-*',true,[]);
         loopNumList(currLoop)=i;
         accMotion=fastDesEigMatch(clouds,cameraPosePair,overlap,eigDGridStep,res,MSEHold);
         beforeMotion=(2:length(relativeMotion));
-        fixMotion=arrayfun(@(x) {relativeMotion{x},x-1,x,MSE(x)} , beforeMotion ,'UniformOutput',false ); %²¹ÉÏÇ°Ãæfix½á¹û
+        fixMotion=arrayfun(@(x) {relativeMotion{x},x-1,x,MSE(x)} , beforeMotion ,'UniformOutput',false ); %ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½fixï¿½ï¿½ï¿?
         for f=1:length(fixMotion)
             accMotion=[accMotion;fixMotion{f}];
         end
@@ -69,5 +68,7 @@ for i=75:N
     end
 end
 
-    routeDisplay(MotionGlobal,'r-o',false,[]);
-    obtainResult(clouds,MotionGlobal(1:60),false,mergeStep);
+    routeDisplay(MotionGlobal,'r-o',false,[20]);
+    %%
+    obtainResult(clouds(1:end),MotionGlobal(1:N),false,mergeStep);
+    hold off;
